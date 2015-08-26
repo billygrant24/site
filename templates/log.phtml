@@ -22,13 +22,13 @@
     <div class="row">
         <?php foreach ($this->listContents('log', 2) as $index => $log): ?>
             <div class="col-md-3 col-md-push-3 <?= $index % 2 ? 'text-right' : '' ?>">
-                    <strong>
-                        <a href="/<?= $this->e($log->getUri()) ?>" title="<?= $this->e($log->getMeta('title')) ?>">
-                            <?= $log->getMeta('title') ?>
-                        </a>
-                    </strong>
+                <strong>
+                    <a href="/<?= $this->e($log->getUri()) ?>" title="<?= $this->e($log->getMeta('title')) ?>">
+                        <?= $log->getMeta('title') ?>
+                    </a>
+                </strong>
 
-                    <p class="text-muted small"><?= $log->getMeta('date') ?></p>
+                <p class="text-muted small"><?= $log->getMeta('date') ?></p>
             </div>
         <?php endforeach; ?>
     </div>
