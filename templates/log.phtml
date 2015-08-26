@@ -1,0 +1,35 @@
+<?php $this->layout('shared::layout', ['title' => $meta['title']]) ?>
+
+<?php $this->start('main') ?>
+    <div class="row" style="margin-bottom: 45px;">
+        <div class="col-md-6 col-md-push-3">
+            <div>
+                <p class="small text-center" style="margin-top: 15px;">
+                    <?= $meta['date'] ?>
+                </p>
+
+                <h1><?= $this->e($meta['title']) ?></h1>
+
+                <?= $content ?>
+
+<!--                <div style="margin-top: 30px; font-size: 18px;">-->
+<!--                    <span class="h5" style="font-size: inherit;">--><?//= $meta['author'] ?><!--.</span>-->
+<!--                </div>-->
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <?php foreach ($this->listContents('log', 2) as $index => $log): ?>
+            <div class="col-md-3 col-md-push-3 <?= $index % 2 ? 'text-right' : '' ?>">
+                    <strong>
+                        <a href="/<?= $this->e($log->getUri()) ?>" title="<?= $this->e($log->getMeta('title')) ?>">
+                            <?= $log->getMeta('title') ?>
+                        </a>
+                    </strong>
+
+                    <p class="text-muted small"><?= $log->getMeta('date') ?></p>
+            </div>
+        <?php endforeach; ?>
+    </div>
+<?php $this->stop(); ?>

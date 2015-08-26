@@ -1,0 +1,21 @@
+<?php $this->layout('shared::layout', ['title' => $meta['title']]) ?>
+
+<?php $this->start('main') ?>
+    <div class="row" style="margin-bottom: 45px;">
+        <div class="col-md-6">
+            <div>
+                <h1><?= $this->e($meta['title']) ?></h1>
+
+                <p>An archive cataloguing my thoughts on software development.</p>
+
+                <?php foreach ($this->listContents('log') as $log): ?>
+                    <p>
+                        <a href="/<?= $this->e($log->getUri()) ?>" title="<?= $this->e($log->getMeta('title')) ?>">
+                            <?= $log->getMeta('title') ?>
+                        </a>
+                    </p>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </div>
+<?php $this->stop(); ?>

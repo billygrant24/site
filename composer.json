@@ -1,0 +1,29 @@
+{
+    "name": "williamgb/html",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "William Grant-Buckley",
+            "email": "william@codist.uk"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "erusev/parsedown-extra": "dev-master",
+        "league/flysystem": "^1.1@dev",
+        "league/pipeline": "dev-master",
+        "league/plates": "^3.0@dev",
+        "mnapoli/front-yaml": "dev-master",
+        "nikic/fast-route": "dev-master",
+        "symfony/http-foundation": "~3.0@dev",
+        "symfony/debug": "~3.0@dev",
+        "pimple/pimple": "~3.0@dev",
+        "vlucas/phpdotenv": "~2.1@dev",
+        "league/flysystem-cached-adapter": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "": "src"
+        }
+    }
+}
