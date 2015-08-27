@@ -1,5 +1,5 @@
 <?php
-namespace Pipeline\Stage;
+namespace Pipeline\Stage\Document;
 
 use League\Pipeline\StageInterface;
 use Mni\FrontYAML\Parser;

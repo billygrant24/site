@@ -1,5 +1,5 @@
 <?php
-namespace Pipeline\Stage;
+namespace Pipeline\Stage\Document;
 
 use Exception\NotFoundException;
 use League\Flysystem\Filesystem;
@@ -27,7 +27,7 @@ class ResolveDocument implements StageInterface
      */
     public function __construct($path, Filesystem $storage)
     {
-        $this->path = $path;
+        $this->path    = $path;
         $this->storage = $storage;
     }
 

@@ -2,13 +2,13 @@
 namespace Template\Extension;
 
 use Exception\NotFoundException;
-use League\Pipeline\Pipeline;
 use League\Plates\Engine;
 use League\Plates\Extension\ExtensionInterface;
 use Pimple\Container;
+use Pipeline\DocumentPipeline;
 use Pipeline\Payload\DocumentPayload;
-use Pipeline\Stage\ParseFrontMatter;
-use Pipeline\Stage\ResolveDocument;
+use Pipeline\Stage\Document\ParseFrontMatter;
+use Pipeline\Stage\Document\ResolveDocument;
 
 /**
  * Class FinderExtension
@@ -47,10 +47,11 @@ class FinderExtension implements ExtensionInterface
     public function read($path)
     {
         try {
-            $document = new DocumentPayload();
-            $pipeline = (new Pipeline())
-                ->pipe(new ResolveDocument($path, $this->container['storage']))
-                ->pipe(new ParseFrontMatter($this->container['parser']));
+            $document = new DocumentPayload;
+            $pipeline = new DocumentPipeline([
+                new ResolveDocument($path, $this->container['storage']),
+                new ParseFrontMatter($this->container['parser']),
+            ]);
 
             return $pipeline->process($document);
         } catch (NotFoundException $e) {

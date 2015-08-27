@@ -3,9 +3,12 @@
 use Dotenv\Dotenv;
 use FastRoute\Dispatcher;
 use Pimple\Container;
+use Pipeline\HttpRequestPipeline;
+use Pipeline\Payload\HttpRequestPayload;
+use Pipeline\Stage\Http\DispatchHandler;
+use Pipeline\Stage\Http\MatchRoute;
 use Symfony\Component\Debug\Debug;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class Kernel
@@ -27,36 +30,17 @@ class Kernel
     /**
      * @param \FastRoute\Dispatcher $dispatcher
      *
-     * @return \Symfony\Component\HttpFoundation\Response
-     * @throws \Exception\MethodNotAllowedException
-     * @throws \Exception\NotFoundException
+     * @return mixed
      */
     public function run(Dispatcher $dispatcher)
     {
-        $request   = Request::createFromGlobals();
-        $routeInfo = $dispatcher->dispatch($request->getMethod(), $request->getPathInfo());
+        $request  = Request::createFromGlobals();
+        $pipeline = new HttpRequestPipeline([
+            new MatchRoute($dispatcher),
+            new DispatchHandler($this->container),
+        ]);
 
-        try {
-            switch ($routeInfo[0]) {
-                case Dispatcher::NOT_FOUND:
-                    throw new Exception\NotFoundException($request);
-                    break;
-                case Dispatcher::METHOD_NOT_ALLOWED:
-                    $allowedMethods = $routeInfo[1];
-                    throw new Exception\MethodNotAllowedException();
-                    break;
-                case Dispatcher::FOUND:
-                    $handler  = $routeInfo[1];
-                    $response = $handler($this->container, $request);
-                    break;
-            }
-        } catch (Exception\NotFoundException $e) {
-            $response = new Response($this->container['templates']->render('404'), 404);
-        } catch (Exception\MethodNotAllowedException $e) {
-            $response = new Response($this->container['templates']->render('405'), 405);
-        }
-
-        return $response->send();
+        return $pipeline->process(new HttpRequestPayload($request))->getResponse()->send();
     }
 
     protected function boot()

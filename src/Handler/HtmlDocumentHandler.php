@@ -1,20 +1,20 @@
 <?php
 namespace Handler;
 
-use League\Pipeline\Pipeline;
 use Pimple\Container;
+use Pipeline\DocumentPipeline;
 use Pipeline\Payload\DocumentPayload;
-use Pipeline\Stage\ParseFrontMatter;
-use Pipeline\Stage\RenderTemplate;
-use Pipeline\Stage\ResolveDocument;
+use Pipeline\Stage\Document\ParseFrontMatter;
+use Pipeline\Stage\Document\RenderTemplate;
+use Pipeline\Stage\Document\ResolveDocument;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class DefaultDocumentHandler
+ * Class HtmlDocumentHandler
  * @package Handler
  */
-class DefaultDocumentHandler
+class HtmlDocumentHandler
 {
     /**
      * @param \Pimple\Container                         $container
@@ -24,10 +24,11 @@ class DefaultDocumentHandler
      */
     public function __invoke(Container $container, Request $request)
     {
-        $pipeline = (new Pipeline)
-            ->pipe(new ResolveDocument($request->getPathInfo(), $container['storage']))
-            ->pipe(new ParseFrontMatter($container['parser']))
-            ->pipe(new RenderTemplate($container['templates']));
+        $pipeline = new DocumentPipeline([
+            new ResolveDocument($request->getPathInfo(), $container['storage']),
+            new ParseFrontMatter($container['parser']),
+            new RenderTemplate($container['templates']),
+        ]);
 
         $document = $pipeline->process(new DocumentPayload);
 

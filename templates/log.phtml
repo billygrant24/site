@@ -16,15 +16,15 @@
     </div>
     <hr>
     <div class="row">
-        <?php foreach ($this->find('log')->whereNot('meta.title', $meta['title']) as $index => $log): ?>
-            <div class="col-md-3 col-md-push-3 <?= $index % 2 ? 'text-right' : '' ?>">
+        <?php foreach ($this->find('log')->whereNot('meta.title', $meta['title']) as $log): ?>
+            <div class="col-md-3 col-md-push-3 text-left">
                 <strong>
-                    <a href="/<?= $this->e($log->getUri()) ?>" title="<?= $this->e($log->getMeta('title')) ?>">
-                        <?= $log->getMeta('title') ?>
+                    <a href="/<?= $this->e($log->uri) ?>" title="<?= $this->e($log->meta['title']) ?>">
+                        <?= $log->meta['title'] ?>
                     </a>
                 </strong>
 
-                <p class="text-muted small"><?= $log->getMeta('date') ?></p>
+                <p class="text-muted small"><?= $log->meta['date'] ?></p>
             </div>
         <?php endforeach; ?>
     </div>

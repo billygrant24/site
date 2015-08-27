@@ -29,11 +29,27 @@ class DocumentPayload
     }
 
     /**
+     * @param mixed $content
+     */
+    public function setContent($content)
+    {
+        $this->content = $content;
+    }
+
+    /**
      * @return mixed
      */
     public function getLastModified()
     {
         return $this->lastModified;
+    }
+
+    /**
+     * @param mixed $lastModified
+     */
+    public function setLastModified($lastModified)
+    {
+        $this->lastModified = $lastModified;
     }
 
     /**
@@ -79,11 +95,27 @@ class DocumentPayload
     }
 
     /**
+     * @param mixed $output
+     */
+    public function setOutput($output)
+    {
+        $this->output = $output;
+    }
+
+    /**
      * @return mixed
      */
     public function getFile()
     {
         return $this->file;
+    }
+
+    /**
+     * @param mixed $file
+     */
+    public function setFile($file)
+    {
+        $this->file = $file;
     }
 
     /**
@@ -100,37 +132,5 @@ class DocumentPayload
     public function setUri($uri)
     {
         $this->uri = $uri;
-    }
-
-    /**
-     * @param mixed $output
-     */
-    public function setOutput($output)
-    {
-        $this->output = $output;
-    }
-
-    /**
-     * @param mixed $file
-     */
-    public function setFile($file)
-    {
-        $this->file = $file;
-    }
-
-    /**
-     * @param mixed $lastModified
-     */
-    public function setLastModified($lastModified)
-    {
-        $this->lastModified = $lastModified;
-    }
-
-    /**
-     * @param mixed $content
-     */
-    public function setContent($content)
-    {
-        $this->content = $content;
     }
 }
