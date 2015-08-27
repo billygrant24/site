@@ -3,11 +3,16 @@ namespace Pipeline\Payload;
 
 /**
  * Class DocumentPayload
+ *
  * @package Pipeline\Payload
  */
 class DocumentPayload
 {
     public $container;
+
+    protected $file;
+
+    protected $content;
 
     protected $meta;
 
@@ -15,17 +20,14 @@ class DocumentPayload
 
     protected $uri;
 
-    protected $document;
-
-    protected $parsedDocument;
-
-    protected $content;
-
     protected $output;
+
+    protected $lastModified;
 
     public function __construct($uri)
     {
         $this->setUri($uri);
+        $this->setPath($uri . '.md');
     }
 
     /**
@@ -47,9 +49,9 @@ class DocumentPayload
     /**
      * @return mixed
      */
-    public function getDocument()
+    public function getLastModified()
     {
-        return $this->document;
+        return $this->lastModified;
     }
 
     /**
@@ -60,7 +62,7 @@ class DocumentPayload
      */
     public function getMeta($key = null, $default = null)
     {
-        if (!$key) {
+        if ( ! $key) {
             return $this->meta;
         }
 
@@ -72,11 +74,18 @@ class DocumentPayload
     }
 
     /**
-     * @param mixed $meta
+     * @param string|null $key
+     * @param mixed|null  $value
      */
-    public function setMeta($meta)
+    public function setMeta($key = null, $value = null)
     {
-        $this->meta = $meta;
+        if ( ! $value) {
+            $this->meta = $key;
+
+            return;
+        }
+
+        $this->meta[$key] = $value;
     }
 
     /**
@@ -106,6 +115,14 @@ class DocumentPayload
     /**
      * @return mixed
      */
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getUri()
     {
         return $this->uri;
@@ -117,22 +134,6 @@ class DocumentPayload
     public function setUri($uri)
     {
         $this->uri = $uri;
-    }
-
-    /**
-     * @param mixed $document
-     */
-    public function setDocument($document)
-    {
-        $this->document = $document;
-    }
-
-    /**
-     * @param mixed $content
-     */
-    public function setContent($content)
-    {
-        $this->content = $content;
     }
 
     /**
@@ -152,18 +153,26 @@ class DocumentPayload
     }
 
     /**
-     * @return mixed
+     * @param mixed $file
      */
-    public function getParsedDocument()
+    public function setFile($file)
     {
-        return $this->parsedDocument;
+        $this->file = $file;
     }
 
     /**
-     * @param mixed $parsedDocument
+     * @param mixed $lastModified
      */
-    public function setParsedDocument($parsedDocument)
+    public function setLastModified($lastModified)
     {
-        $this->parsedDocument = $parsedDocument;
+        $this->lastModified = $lastModified;
+    }
+
+    /**
+     * @param mixed $content
+     */
+    public function setContent($content)
+    {
+        $this->content = $content;
     }
 }

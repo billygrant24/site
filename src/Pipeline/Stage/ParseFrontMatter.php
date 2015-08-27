@@ -18,14 +18,14 @@ class ParseFrontMatter implements StageInterface
      */
     public function process($payload)
     {
-        $payload->setParsedDocument($payload->container['parser']->parse($payload->getDocument()));
+        $document = $payload->container['parser']->parse($payload->getFile());
 
-        $payload->setMeta(
-            array_merge(
-                $payload->getMeta(),
-                $payload->getParsedDocument()->getYAML()
-            )
-        );
+        $payload->setMeta($document->getYAML());
+        $payload->setContent($document->getContent());
+
+        if ( ! $payload->getMeta('date')) {
+            $payload->setMeta('date', date('j M Y', $payload->getLastModified()));
+        }
 
         return $payload;
     }

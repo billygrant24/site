@@ -20,7 +20,7 @@ class RenderTemplate implements StageInterface
     {
         $templates = $payload->container['templates'];
 
-        $payload->setOutput($templates->render($payload->getMeta()['template'], [
+        $payload->setOutput($templates->render($payload->getMeta('template'), [
             'meta'    => $payload->getMeta(),
             'content' => $payload->getContent(),
         ]));

@@ -26,15 +26,15 @@ to modify a piece of software. A stable package, all dependencies accounted for,
 change. In contrast, an unstable package is volatile, that is, likely to change. By acknowledging this, we have a
 stark truth - a package can only ever be as stable as it's most unstable dependency.
 
-Fortunately we can attain peace of mind and prove the stability of a package with the following equation:
+Fortunately we can attain peace of mind and prove the stability of a package using **Robert C. Martin's** equation:
 
-> Where `Ca` is Afferent Couplings (the number of classes external to this package that depend on classes within this
-> package) and `Ce` is Efferent Couplings (the number of classes within this package that depend upon classes outside of
-> the package)
->
-> `I = (Ce / (Ca+Ce))`
->
-> <footer>Courtesy of <cite title="Source Title">Robert C. Martin</cite></footer>
+    Let Ca be the number of classes external to this package that
+    depend on classes within this package (Afferent Couplings)
+
+    Let Ce be  the number of classes within this package that
+    depend upon classes outside of the package (Efferent Couplings)
+
+    I = (Ce / (Ca + Ce))
 
 Following this, when `I = 0`, your package has reached maximum stability. When `I = 1`, your package has reached 
 maximum instability.

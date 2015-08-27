@@ -1,7 +1,9 @@
 <?php
 
+use Dotenv\Dotenv;
 use FastRoute\Dispatcher;
 use Pimple\Container;
+use Symfony\Component\Debug\Debug;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -18,6 +20,8 @@ class Kernel
     public function __construct()
     {
         $this->container = new Container($this->configureDefaults());
+
+        $this->boot();
     }
 
     /**
@@ -55,13 +59,22 @@ class Kernel
         return $response->send();
     }
 
+    protected function boot()
+    {
+        (new Dotenv(__DIR__ . '/../'))->load();
+
+        if (getenv('APP_DEBUG')) {
+            Debug::enable();
+        }
+    }
+
     /**
      * @return array
      */
     protected function configureDefaults()
     {
         return [
-            'contentDir'         => getcwd() . '/../content',
+            'contentDir'         => __DIR__ . '/../content',
             'parser'             => function () {
                 return new \Mni\FrontYAML\Parser();
             },
@@ -72,7 +85,7 @@ class Kernel
 
                 return new \League\Flysystem\Filesystem($adapter);
             },
-            'templatesDir'       => getcwd() . '/../templates',
+            'templatesDir'       => __DIR__ . '/../templates',
             'templatesExtension' => 'phtml',
             'templates'          => function ($c) {
                 $templates = new \League\Plates\Engine($c['templatesDir'], $c['templatesExtension']);

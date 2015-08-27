@@ -20,17 +20,12 @@ class ResolveDocument implements StageInterface
      */
     public function process($payload)
     {
-        $path = $payload->getUri() . '.md';
-
-        if ( ! $payload->container['storage']->has($path)) {
+        if ( ! $payload->container['storage']->has($payload->getPath())) {
             throw new NotFoundException();
         }
 
-        $payload->setPath($path);
-        $payload->setDocument($payload->container['storage']->read($payload->getPath()));
-        $payload->setMeta([
-            'date' => date('j M Y', $payload->container['storage']->getTimestamp($payload->getPath())),
-        ]);
+        $payload->setFile($payload->container['storage']->read($payload->getPath()));
+        $payload->setLastModified($payload->container['storage']->getTimestamp($payload->getPath()));
 
         return $payload;
     }

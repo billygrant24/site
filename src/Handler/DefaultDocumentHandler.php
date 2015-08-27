@@ -4,7 +4,6 @@ namespace Handler;
 use League\Pipeline\Pipeline;
 use Pimple\Container;
 use Pipeline\Payload\DocumentPayload;
-use Pipeline\Stage\ParseContent;
 use Pipeline\Stage\ParseFrontMatter;
 use Pipeline\Stage\RenderTemplate;
 use Pipeline\Stage\ResolveDocument;
@@ -31,7 +30,6 @@ class DefaultDocumentHandler
         $pipeline = (new Pipeline)
             ->pipe(new ResolveDocument)
             ->pipe(new ParseFrontMatter)
-            ->pipe(new ParseContent)
             ->pipe(new RenderTemplate);
 
         $document = $pipeline->process($document);
