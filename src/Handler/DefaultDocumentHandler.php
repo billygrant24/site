@@ -24,15 +24,12 @@ class DefaultDocumentHandler
      */
     public function __invoke(Container $container, Request $request)
     {
-        $document = new DocumentPayload($request->getPathInfo());
-        $document->setContainer($container);
-
         $pipeline = (new Pipeline)
-            ->pipe(new ResolveDocument)
-            ->pipe(new ParseFrontMatter)
-            ->pipe(new RenderTemplate);
+            ->pipe(new ResolveDocument($request->getPathInfo(), $container['storage']))
+            ->pipe(new ParseFrontMatter($container['parser']))
+            ->pipe(new RenderTemplate($container['templates']));
 
-        $document = $pipeline->process($document);
+        $document = $pipeline->process(new DocumentPayload);
 
         return new Response($document->getOutput(), 200);
     }

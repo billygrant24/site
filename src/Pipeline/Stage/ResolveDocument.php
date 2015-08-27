@@ -2,6 +2,7 @@
 namespace Pipeline\Stage;
 
 use Exception\NotFoundException;
+use League\Flysystem\Filesystem;
 use League\Pipeline\StageInterface;
 
 /**
@@ -10,6 +11,26 @@ use League\Pipeline\StageInterface;
  */
 class ResolveDocument implements StageInterface
 {
+    /**
+     * @var string
+     */
+    protected $path;
+
+    /**
+     * @var \League\Flysystem\Filesystem
+     */
+    protected $storage;
+
+    /**
+     * @param string                       $path
+     * @param \League\Flysystem\Filesystem $storage
+     */
+    public function __construct($path, Filesystem $storage)
+    {
+        $this->path = $path;
+        $this->storage = $storage;
+    }
+
     /**
      * Process the payload.
      *
@@ -20,12 +41,15 @@ class ResolveDocument implements StageInterface
      */
     public function process($payload)
     {
-        if ( ! $payload->container['storage']->has($payload->getPath())) {
+        $pathWithExtension = $this->path . '.md';
+
+        if ( ! $this->storage->has($pathWithExtension)) {
             throw new NotFoundException();
         }
 
-        $payload->setFile($payload->container['storage']->read($payload->getPath()));
-        $payload->setLastModified($payload->container['storage']->getTimestamp($payload->getPath()));
+        $payload->setUri($this->path);
+        $payload->setFile($this->storage->read($pathWithExtension));
+        $payload->setLastModified($this->storage->getTimestamp($pathWithExtension));
 
         return $payload;
     }

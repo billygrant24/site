@@ -8,35 +8,17 @@ namespace Pipeline\Payload;
  */
 class DocumentPayload
 {
-    public $container;
-
     protected $file;
 
     protected $content;
 
     protected $meta;
 
-    protected $path;
-
     protected $uri;
 
     protected $output;
 
     protected $lastModified;
-
-    public function __construct($uri)
-    {
-        $this->setUri($uri);
-        $this->setPath($uri . '.md');
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getContainer()
-    {
-        return $this->container;
-    }
 
     /**
      * @return mixed
@@ -99,22 +81,6 @@ class DocumentPayload
     /**
      * @return mixed
      */
-    public function getPath()
-    {
-        return $this->path;
-    }
-
-    /**
-     * @param mixed $path
-     */
-    public function setPath($path)
-    {
-        $this->path = $path;
-    }
-
-    /**
-     * @return mixed
-     */
     public function getFile()
     {
         return $this->file;
@@ -142,14 +108,6 @@ class DocumentPayload
     public function setOutput($output)
     {
         $this->output = $output;
-    }
-
-    /**
-     * @param mixed $container
-     */
-    public function setContainer($container)
-    {
-        $this->container = $container;
     }
 
     /**

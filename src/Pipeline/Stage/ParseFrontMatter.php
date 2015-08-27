@@ -2,6 +2,7 @@
 namespace Pipeline\Stage;
 
 use League\Pipeline\StageInterface;
+use Mni\FrontYAML\Parser;
 
 /**
  * Class ParseFrontMatter
@@ -9,6 +10,19 @@ use League\Pipeline\StageInterface;
  */
 class ParseFrontMatter implements StageInterface
 {
+    /**
+     * @var \Mni\FrontYAML\Parser
+     */
+    protected $parser;
+
+    /**
+     * @param \Mni\FrontYAML\Parser $parser
+     */
+    public function __construct(Parser $parser)
+    {
+        $this->parser = $parser;
+    }
+
     /**
      * Process the payload.
      *
@@ -18,7 +32,7 @@ class ParseFrontMatter implements StageInterface
      */
     public function process($payload)
     {
-        $document = $payload->container['parser']->parse($payload->getFile());
+        $document = $this->parser->parse($payload->getFile());
 
         $payload->setMeta($document->getYAML());
         $payload->setContent($document->getContent());

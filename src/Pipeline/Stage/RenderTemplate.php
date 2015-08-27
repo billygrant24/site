@@ -2,13 +2,28 @@
 namespace Pipeline\Stage;
 
 use League\Pipeline\StageInterface;
+use League\Plates\Engine;
 
 /**
  * Class RenderTemplate
+ *
  * @package Pipeline\Stage
  */
 class RenderTemplate implements StageInterface
 {
+    /**
+     * @var \League\Plates\Engine
+     */
+    protected $templates;
+
+    /**
+     * @param \League\Plates\Engine $templates
+     */
+    public function __construct(Engine $templates)
+    {
+        $this->templates = $templates;
+    }
+
     /**
      * Process the payload.
      *
@@ -18,12 +33,13 @@ class RenderTemplate implements StageInterface
      */
     public function process($payload)
     {
-        $templates = $payload->container['templates'];
-
-        $payload->setOutput($templates->render($payload->getMeta('template'), [
+        $template      = $payload->getMeta('template');
+        $templatedData = [
             'meta'    => $payload->getMeta(),
             'content' => $payload->getContent(),
-        ]));
+        ];
+
+        $payload->setOutput($this->templates->render($template, $templatedData));
 
         return $payload;
     }

@@ -12,6 +12,7 @@ use Pipeline\Stage\ResolveDocument;
 
 /**
  * Class FinderExtension
+ *
  * @package Template\Extension
  */
 class FinderExtension implements ExtensionInterface
@@ -46,10 +47,10 @@ class FinderExtension implements ExtensionInterface
     public function read($path)
     {
         try {
-            $document = new DocumentPayload($path);
-            $document->setContainer($this->container);
-
-            $pipeline = (new Pipeline())->pipe(new ResolveDocument())->pipe(new ParseFrontMatter());
+            $document = new DocumentPayload();
+            $pipeline = (new Pipeline())
+                ->pipe(new ResolveDocument($path, $this->container['storage']))
+                ->pipe(new ParseFrontMatter($this->container['parser']));
 
             return $pipeline->process($document);
         } catch (NotFoundException $e) {
@@ -69,10 +70,11 @@ class FinderExtension implements ExtensionInterface
 
         foreach ($this->container['storage']->listContents($path, true) as $pathInfo) {
             if ($pathInfo['type'] === 'file' && $pathInfo['extension'] === 'md') {
-                $document = new DocumentPayload(str_replace('.md', '', $pathInfo['path']));
-                $document->setContainer($this->container);
+                $document = new DocumentPayload;
 
-                $pipeline = (new Pipeline())->pipe(new ResolveDocument())->pipe(new ParseFrontMatter());
+                $pipeline = (new Pipeline())
+                    ->pipe(new ResolveDocument(str_replace('.md', '', $pathInfo['path']), $this->container['storage']))
+                    ->pipe(new ParseFrontMatter($this->container['parser']));
 
                 $documents[] = $pipeline->process($document);
             }
