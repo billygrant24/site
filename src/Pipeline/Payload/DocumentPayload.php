@@ -8,13 +8,13 @@ namespace Pipeline\Payload;
  */
 class DocumentPayload
 {
+    public $content;
+
+    public $meta;
+
+    public $uri;
+
     protected $file;
-
-    protected $content;
-
-    protected $meta;
-
-    protected $uri;
 
     protected $output;
 

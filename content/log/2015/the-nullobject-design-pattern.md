@@ -30,7 +30,7 @@ This is where the Null Object pattern can guide us toward a solution. First, let
         }
     }
 
- Now let's attempt create an instance of User:
+ Now let's attempt to create an instance of User:
 
     if ( ! $user = (new User)->findById(42)) {
         $user = new NullUser;

@@ -36,7 +36,7 @@ class FinderExtension implements ExtensionInterface
     public function register(Engine $engine)
     {
         $engine->registerFunction('read', [$this, 'read']);
-        $engine->registerFunction('listContents', [$this, 'listContents']);
+        $engine->registerFunction('find', [$this, 'find']);
     }
 
     /**
@@ -59,31 +59,18 @@ class FinderExtension implements ExtensionInterface
     }
 
     /**
-     * @param string   $path
-     * @param int|null $limit
+     * @param string $rootPath
      *
-     * @return \Pipeline\Payload\DocumentPayload[]
+     * @return static
      */
-    public function listContents($path, $limit = null)
+    public function find($rootPath = '')
     {
-        $documents = [];
+        $paths = $this->container['storage']->listContents($rootPath, true);
 
-        foreach ($this->container['storage']->listContents($path, true) as $pathInfo) {
-            if ($pathInfo['type'] === 'file' && $pathInfo['extension'] === 'md') {
-                $document = new DocumentPayload;
-
-                $pipeline = (new Pipeline())
-                    ->pipe(new ResolveDocument(str_replace('.md', '', $pathInfo['path']), $this->container['storage']))
-                    ->pipe(new ParseFrontMatter($this->container['parser']));
-
-                $documents[] = $pipeline->process($document);
-            }
-        }
-
-        if ( ! $limit) {
-            return $documents;
-        }
-
-        return array_slice($documents, 0, $limit);
+        return (new \Collection($paths))->filter(function ($pathInfo) {
+            return $pathInfo['type'] === 'file' && $pathInfo['extension'] === 'md';
+        })->map(function ($pathInfo) {
+            return $this->read(str_replace('.md', '', $pathInfo['path']));
+        });
     }
 }
