@@ -4,7 +4,12 @@ namespace Pipeline\Payload;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class HttpRequestPayload
+/**
+ * Class WebRequest
+ *
+ * @package Pipeline\Payload
+ */
+class WebRequest
 {
     /**
      * @var \Symfony\Component\HttpFoundation\Response

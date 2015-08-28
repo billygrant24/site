@@ -3,21 +3,24 @@
 <?php $this->start('main') ?>
     <div class="row" style="margin-bottom: 45px;">
         <div class="col-md-6 col-md-push-3">
-            <div>
-                <p class="small text-center" style="margin-top: 15px;">
-                    <?= $meta['date'] ?>
+            <div class="text-center">
+                <p style="margin-top: 15px;">
+                    <a href="/">Home</a>
                 </p>
 
+                <p class="small">
+                    <?= $meta['date'] ?>
+                </p>
                 <h1><?= $this->e($meta['title']) ?></h1>
 
-                <?= $content ?>
+                <p class="lead"><?= $this->e($meta['summary']) ?></p>
             </div>
+            <?= $content ?>
         </div>
     </div>
-    <hr>
     <div class="row">
-        <?php foreach ($this->find('log')->whereNot('meta.title', $meta['title']) as $log): ?>
-            <div class="col-md-3 col-md-push-3 text-left">
+        <?php foreach ($this->find('log')->whereNot('meta.title', $meta['title'])->take(2) as $index => $log): ?>
+            <div class="col-md-3 col-md-push-3 <?= $index % 2 ? 'text-right' : '' ?>">
                 <strong>
                     <a href="/<?= $this->e($log->uri) ?>" title="<?= $this->e($log->meta['title']) ?>">
                         <?= $log->meta['title'] ?>

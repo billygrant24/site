@@ -3,7 +3,7 @@ namespace Handler;
 
 use Pimple\Container;
 use Pipeline\Factory;
-use Pipeline\Payload\DocumentPayload;
+use Pipeline\Payload\Resource;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -29,6 +29,6 @@ class HtmlHandler
             $container['templates']
         );
 
-        return new Response($viewBuilder->process(new DocumentPayload)->getOutput(), 200);
+        return new Response($viewBuilder->process(new Resource)->getOutput(), 200);
     }
 }

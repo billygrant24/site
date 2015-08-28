@@ -28,14 +28,16 @@ class ResolveFile implements StageInterface
      */
     public function __construct($path, Filesystem $storage)
     {
-        $this->path    = $path;
+        $path = trim($path, '/');
+
+        $this->path = $path ? $path : 'home';
         $this->storage = $storage;
     }
 
     /**
      * Process the payload.
      *
-     * @param \Pipeline\Payload\DocumentPayload $payload
+     * @param \Pipeline\Payload\Resource $payload
      *
      * @return mixed
      * @throws \Exception\NotFoundException

@@ -1,9 +1,8 @@
 ---
-title: Design Patterns: The Null Object
+title: Use the Null Object pattern to simplify your code
+summary: The Null Object pattern allows you to write more robust code free of defensive boilerplate.
 template: log
 ---
-
-The Null Object pattern allows you to write more robust code with less defensive boilerplate.
 
 How often do you write code like this:
 

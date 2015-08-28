@@ -3,19 +3,17 @@
 <?php $this->start('main') ?>
     <div class="row" style="margin-bottom: 45px;">
         <div class="col-md-6 col-md-push-3">
-            <div>
-                <h1><?= $this->e($meta['title']) ?></h1>
+            <h1><?= $this->e($meta['title']) ?></h1>
 
-                <p>An archive cataloguing my thoughts on software development.</p>
+            <p>A collection of brief thoughts on software development.</p>
 
-                <?php foreach ($this->find('log') as $log): ?>
-                    <p>
-                        <a href="/<?= $this->e($log->uri) ?>" title="<?= $this->e($log->meta['title']) ?>">
-                            <?= $log->meta['title'] ?>
-                        </a>
-                    </p>
-                <?php endforeach; ?>
-            </div>
+            <?php foreach ($this->find('log') as $log): ?>
+                <p>
+                    <a href="/<?= $this->e($log->uri) ?>" title="<?= $this->e($log->meta['title']) ?>">
+                        <?= $log->meta['title'] ?>
+                    </a>
+                </p>
+            <?php endforeach; ?>
         </div>
     </div>
 <?php $this->stop(); ?>

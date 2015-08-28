@@ -1,12 +1,10 @@
 ---
-title: Building Better Software: The Stable Dependencies Principle
-author: William
+title: Build robust software by following the Stable Dependencies Principle
+summary: This article is the first in a series I intend to write on the principles of software development.
 template: log
 ---
 
-This article is the first in a series I intend to write on the principles of software development.
-
-Most developers will be familiar with the <abbr title="Don't Repeat Yourself">DRY</abbr> (Don't Repeat Yourself) 
+Most developers will be familiar with the <abbr title="Don't Repeat Yourself">DRY</abbr> (Don't Repeat Yourself)
 principle. It states that:
 
 > Every piece of knowledge must have a single, unambiguous, authoritative representation within a system.

@@ -5,6 +5,7 @@ use Exception\MethodNotAllowedException;
 use Exception\NotFoundException;
 use FastRoute\Dispatcher;
 use League\Pipeline\StageInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class DispatchHandler
@@ -31,7 +32,7 @@ class DispatchHandler implements StageInterface
     /**
      * Process the payload.
      *
-     * @param \Pipeline\Payload\DocumentPayload $payload
+     * @param \Pipeline\Payload\Resource $payload
      *
      * @return mixed
      */

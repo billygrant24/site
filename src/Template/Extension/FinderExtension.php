@@ -6,10 +6,10 @@ use League\Plates\Engine;
 use League\Plates\Extension\ExtensionInterface;
 use Pimple\Container;
 use Pipeline\Factory;
-use Pipeline\ViewBuilderPipeline;
-use Pipeline\Payload\DocumentPayload;
+use Pipeline\Payload\Resource;
 use Pipeline\Stage\Document\ParseFrontMatter;
 use Pipeline\Stage\Document\ResolveFile;
+use Utility\Collection;
 
 /**
  * Class FinderExtension
@@ -41,23 +41,6 @@ class FinderExtension implements ExtensionInterface
     }
 
     /**
-     * @param string $path
-     *
-     * @return \Pipeline\Payload\DocumentPayload
-     */
-    public function read($path)
-    {
-        try {
-            $document   = new DocumentPayload;
-            $fileParser = Factory::createFileParser($path, $this->container['storage'], $this->container['parser']);
-
-            return $fileParser->process($document);
-        } catch (NotFoundException $e) {
-            return $document;
-        }
-    }
-
-    /**
      * @param string $rootPath
      *
      * @return static
@@ -66,10 +49,27 @@ class FinderExtension implements ExtensionInterface
     {
         $paths = $this->container['storage']->listContents($rootPath, true);
 
-        return (new \Collection($paths))->filter(function ($pathInfo) {
+        return (new Collection($paths))->filter(function ($pathInfo) {
             return $pathInfo['type'] === 'file' && $pathInfo['extension'] === 'md';
         })->map(function ($pathInfo) {
             return $this->read(str_replace('.md', '', $pathInfo['path']));
         });
+    }
+
+    /**
+     * @param string $path
+     *
+     * @return \Pipeline\Payload\Resource
+     */
+    public function read($path)
+    {
+        try {
+            $document   = new Resource;
+            $fileParser = Factory::createFileParser($path, $this->container['storage'], $this->container['parser']);
+
+            return $fileParser->process($document);
+        } catch (NotFoundException $e) {
+            return $document;
+        }
     }
 }

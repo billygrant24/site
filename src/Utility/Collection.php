@@ -1,6 +1,12 @@
 <?php
+namespace Utility;
 
-class Collection implements ArrayAccess, Countable, IteratorAggregate
+/**
+ * Class Collection
+ *
+ * @package Utility
+ */
+class Collection implements \ArrayAccess, \Countable, \IteratorAggregate
 {
     /**
      * The items contained in the collection.
@@ -60,6 +66,56 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
+     * Convert the collection to its string representation.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->toJson();
+    }
+
+    /**
+     * Get the collection of items as JSON.
+     *
+     * @param  int $options
+     *
+     * @return string
+     */
+    public function toJson($options = 0)
+    {
+        return json_encode($this->toArray(), $options);
+    }
+
+    /**
+     * Get the collection of items as a plain array.
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        return (array) $this->items;
+    }
+
+    /**
+     * Chunk the underlying collection array.
+     *
+     * @param  int  $size
+     * @param  bool $preserveKeys
+     *
+     * @return static
+     */
+    public function chunk($size, $preserveKeys = false)
+    {
+        $chunks = [];
+        foreach (array_chunk($this->items, $size, $preserveKeys) as $chunk) {
+            $chunks[] = new static($chunk);
+        }
+
+        return new static($chunks);
+    }
+
+    /**
      * Collapse the collection of items into a single array.
      *
      * @return static
@@ -69,7 +125,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
         $results = [];
 
         foreach ($this->items as $values) {
-            if ($values instanceof Collection) {
+            if ($values instanceof self) {
                 $values = $values->all();
             }
             $results = array_merge($results, $values);
@@ -121,7 +177,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
                     return static::value($default);
                 }
                 $target = $target[$segment];
-            } elseif ($target instanceof ArrayAccess) {
+            } elseif ($target instanceof \ArrayAccess) {
                 if ( ! isset($target[$segment])) {
                     return static::value($default);
                 }
@@ -148,7 +204,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
      */
     protected function value($value)
     {
-        return $value instanceof Closure ? $value() : $value;
+        return $value instanceof \Closure ? $value() : $value;
     }
 
     /**
@@ -267,69 +323,6 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * Filter items by the given key value pair.
-     *
-     * @param  string $key
-     * @param  mixed  $value
-     * @param  bool   $strict
-     *
-     * @return static
-     */
-    public function whereNot($key, $value, $strict = true)
-    {
-        return $this->filter(function ($item) use ($key, $value, $strict) {
-            return $strict ? static::dataGet($item, $key) !== $value
-                : static::dataGet($item, $key) != $value;
-        });
-    }
-
-    /**
-     * Run a filter over each of the items.
-     *
-     * @param  callable|null $callback
-     *
-     * @return static
-     */
-    public function filter(callable $callback = null)
-    {
-        if ($callback) {
-            return new static(array_filter($this->items, $callback));
-        }
-
-        return new static(array_filter($this->items));
-    }
-
-    /**
-     * Filter items by the given key value pair using loose comparison.
-     *
-     * @param  string $key
-     * @param  mixed  $value
-     *
-     * @return static
-     */
-    public function whereLoose($key, $value)
-    {
-        return $this->where($key, $value, false);
-    }
-
-    /**
-     * Filter items by the given key value pair.
-     *
-     * @param  string $key
-     * @param  mixed  $value
-     * @param  bool   $strict
-     *
-     * @return static
-     */
-    public function where($key, $value, $strict = true)
-    {
-        return $this->filter(function ($item) use ($key, $value, $strict) {
-            return $strict ? static::dataGet($item, $key) === $value
-                : static::dataGet($item, $key) == $value;
-        });
-    }
-
-    /**
      * Get a flattened array of the items in the collection.
      *
      * @return static
@@ -353,6 +346,55 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     public function flip()
     {
         return new static(array_flip($this->items));
+    }
+
+    /**
+     * "Paginate" the collection by slicing it into a smaller collection.
+     *
+     * @param  int $page
+     * @param  int $perPage
+     *
+     * @return static
+     */
+    public function forPage($page, $perPage)
+    {
+        return $this->slice(($page - 1) * $perPage, $perPage);
+    }
+
+    /**
+     * Slice the underlying collection array.
+     *
+     * @param  int  $offset
+     * @param  int  $length
+     * @param  bool $preserveKeys
+     *
+     * @return static
+     */
+    public function slice($offset, $length = null, $preserveKeys = false)
+    {
+        return new static(array_slice($this->items, $offset, $length, $preserveKeys));
+    }
+
+    /**
+     * Get a CachingIterator instance.
+     *
+     * @param  int $flags
+     *
+     * @return \CachingIterator
+     */
+    public function getCachingIterator($flags = CachingIterator::CALL_TOSTRING)
+    {
+        return new \CachingIterator($this->getIterator(), $flags);
+    }
+
+    /**
+     * Get an iterator for the items.
+     *
+     * @return \ArrayIterator
+     */
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->items);
     }
 
     /**
@@ -394,24 +436,6 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
         return function ($item) use ($value) {
             return static::dataGet($item, $value);
         };
-    }
-
-    /**
-     * Key an associative array by a field or using a callback.
-     *
-     * @param  callable|string $keyBy
-     *
-     * @return static
-     */
-    public function keyBy($keyBy)
-    {
-        $keyBy   = $this->valueRetriever($keyBy);
-        $results = [];
-        foreach ($this->items as $item) {
-            $results[$keyBy($item)] = $item;
-        }
-
-        return new static($results);
     }
 
     /**
@@ -523,6 +547,34 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
+     * Convert the object into something JSON serializable.
+     *
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return $this->toArray();
+    }
+
+    /**
+     * Key an associative array by a field or using a callback.
+     *
+     * @param  callable|string $keyBy
+     *
+     * @return static
+     */
+    public function keyBy($keyBy)
+    {
+        $keyBy   = $this->valueRetriever($keyBy);
+        $results = [];
+        foreach ($this->items as $item) {
+            $results[$keyBy($item)] = $item;
+        }
+
+        return new static($results);
+    }
+
+    /**
      * Get the keys of the collection items.
      *
      * @return static
@@ -622,30 +674,15 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * "Paginate" the collection by slicing it into a smaller collection.
+     * Get an item at a given offset.
      *
-     * @param  int $page
-     * @param  int $perPage
+     * @param  mixed $key
      *
-     * @return static
+     * @return mixed
      */
-    public function forPage($page, $perPage)
+    public function offsetGet($key)
     {
-        return $this->slice(($page - 1) * $perPage, $perPage);
-    }
-
-    /**
-     * Slice the underlying collection array.
-     *
-     * @param  int  $offset
-     * @param  int  $length
-     * @param  bool $preserveKeys
-     *
-     * @return static
-     */
-    public function slice($offset, $length = null, $preserveKeys = false)
-    {
-        return new static(array_slice($this->items, $offset, $length, $preserveKeys));
+        return $this->items[$key];
     }
 
     /**
@@ -670,37 +707,6 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
         array_unshift($this->items, $value);
 
         return $this;
-    }
-
-    /**
-     * Push an item onto the end of the collection.
-     *
-     * @param  mixed $value
-     *
-     * @return $this
-     */
-    public function push($value)
-    {
-        $this->offsetSet(null, $value);
-
-        return $this;
-    }
-
-    /**
-     * Set the item at a given offset.
-     *
-     * @param  mixed $key
-     * @param  mixed $value
-     *
-     * @return void
-     */
-    public function offsetSet($key, $value)
-    {
-        if (is_null($key)) {
-            $this->items[] = $value;
-        } else {
-            $this->items[$key] = $value;
-        }
     }
 
     /**
@@ -764,6 +770,37 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
+     * Push an item onto the end of the collection.
+     *
+     * @param  mixed $value
+     *
+     * @return $this
+     */
+    public function push($value)
+    {
+        $this->offsetSet(null, $value);
+
+        return $this;
+    }
+
+    /**
+     * Set the item at a given offset.
+     *
+     * @param  mixed $key
+     * @param  mixed $value
+     *
+     * @return void
+     */
+    public function offsetSet($key, $value)
+    {
+        if (is_null($key)) {
+            $this->items[] = $value;
+        } else {
+            $this->items[$key] = $value;
+        }
+    }
+
+    /**
      * Put an item in the collection by key.
      *
      * @param  mixed $key
@@ -790,7 +827,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     public function random($amount = 1)
     {
         if ($amount > ($count = $this->count())) {
-            throw new InvalidArgumentException("You requested {$amount} items, but there are only {$count} items in the collection");
+            throw new \InvalidArgumentException("You requested {$amount} items, but there are only {$count} items in the collection");
         }
         $keys = array_rand($this->items, $amount);
         if ($amount == 1) {
@@ -863,24 +900,6 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
         shuffle($items);
 
         return new static($items);
-    }
-
-    /**
-     * Chunk the underlying collection array.
-     *
-     * @param  int  $size
-     * @param  bool $preserveKeys
-     *
-     * @return static
-     */
-    public function chunk($size, $preserveKeys = false)
-    {
-        $chunks = [];
-        foreach (array_chunk($this->items, $size, $preserveKeys) as $chunk) {
-            $chunks[] = new static($chunk);
-        }
-
-        return new static($chunks);
     }
 
     /**
@@ -1074,6 +1093,22 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
+     * Run a filter over each of the items.
+     *
+     * @param  callable|null $callback
+     *
+     * @return static
+     */
+    public function filter(callable $callback = null)
+    {
+        if ($callback) {
+            return new static(array_filter($this->items, $callback));
+        }
+
+        return new static(array_filter($this->items));
+    }
+
+    /**
      * Reset the keys on the underlying array.
      *
      * @return static
@@ -1081,6 +1116,53 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     public function values()
     {
         return new static(array_values($this->items));
+    }
+
+    /**
+     * Filter items by the given key value pair using loose comparison.
+     *
+     * @param  string $key
+     * @param  mixed  $value
+     *
+     * @return static
+     */
+    public function whereLoose($key, $value)
+    {
+        return $this->where($key, $value, false);
+    }
+
+    /**
+     * Filter items by the given key value pair.
+     *
+     * @param  string $key
+     * @param  mixed  $value
+     * @param  bool   $strict
+     *
+     * @return static
+     */
+    public function where($key, $value, $strict = true)
+    {
+        return $this->filter(function ($item) use ($key, $value, $strict) {
+            return $strict ? static::dataGet($item, $key) === $value
+                : static::dataGet($item, $key) == $value;
+        });
+    }
+
+    /**
+     * Filter items by the given key value pair.
+     *
+     * @param  string $key
+     * @param  mixed  $value
+     * @param  bool   $strict
+     *
+     * @return static
+     */
+    public function whereNot($key, $value, $strict = true)
+    {
+        return $this->filter(function ($item) use ($key, $value, $strict) {
+            return $strict ? static::dataGet($item, $key) !== $value
+                : static::dataGet($item, $key) != $value;
+        });
     }
 
     /**
@@ -1106,81 +1188,5 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
         ], $arrayableItems);
 
         return new static(call_user_func_array('array_map', $params));
-    }
-
-    /**
-     * Convert the object into something JSON serializable.
-     *
-     * @return array
-     */
-    public function jsonSerialize()
-    {
-        return $this->toArray();
-    }
-
-    /**
-     * Get the collection of items as a plain array.
-     *
-     * @return array
-     */
-    public function toArray()
-    {
-        return (array) $this->items;
-    }
-
-    /**
-     * Get a CachingIterator instance.
-     *
-     * @param  int $flags
-     *
-     * @return \CachingIterator
-     */
-    public function getCachingIterator($flags = CachingIterator::CALL_TOSTRING)
-    {
-        return new CachingIterator($this->getIterator(), $flags);
-    }
-
-    /**
-     * Get an iterator for the items.
-     *
-     * @return \ArrayIterator
-     */
-    public function getIterator()
-    {
-        return new ArrayIterator($this->items);
-    }
-
-    /**
-     * Get an item at a given offset.
-     *
-     * @param  mixed $key
-     *
-     * @return mixed
-     */
-    public function offsetGet($key)
-    {
-        return $this->items[$key];
-    }
-
-    /**
-     * Convert the collection to its string representation.
-     *
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->toJson();
-    }
-
-    /**
-     * Get the collection of items as JSON.
-     *
-     * @param  int $options
-     *
-     * @return string
-     */
-    public function toJson($options = 0)
-    {
-        return json_encode($this->toArray(), $options);
     }
 }

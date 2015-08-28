@@ -27,7 +27,7 @@ class RenderTemplate implements StageInterface
     /**
      * Process the payload.
      *
-     * @param \Pipeline\Payload\DocumentPayload $payload
+     * @param \Pipeline\Payload\Resource $payload
      *
      * @return mixed
      */

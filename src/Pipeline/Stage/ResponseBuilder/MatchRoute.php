@@ -27,7 +27,7 @@ class MatchRoute implements StageInterface
     /**
      * Process the payload.
      *
-     * @param \Pipeline\Payload\HttpRequestPayload $payload
+     * @param \Pipeline\Payload\WebRequest $payload
      *
      * @return mixed
      */

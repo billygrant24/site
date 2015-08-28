@@ -2,11 +2,11 @@
 namespace Pipeline\Payload;
 
 /**
- * Class DocumentPayload
+ * Class Resource
  *
  * @package Pipeline\Payload
  */
-class DocumentPayload
+class Resource
 {
     public $content;
 
@@ -34,6 +34,22 @@ class DocumentPayload
     public function setContent($content)
     {
         $this->content = $content;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    /**
+     * @param mixed $file
+     */
+    public function setFile($file)
+    {
+        $this->file = $file;
     }
 
     /**
@@ -100,22 +116,6 @@ class DocumentPayload
     public function setOutput($output)
     {
         $this->output = $output;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getFile()
-    {
-        return $this->file;
-    }
-
-    /**
-     * @param mixed $file
-     */
-    public function setFile($file)
-    {
-        $this->file = $file;
     }
 
     /**

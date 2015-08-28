@@ -1,10 +1,8 @@
 ---
-title: Design Patterns: The Pipeline
-author: William
+title: Processing sequential tasks using the Pipeline pattern
+summary: We use the Pipeline pattern in situations where data must flow through a pre-defined sequence of steps.
 template: log
 ---
-
-We use the Pipeline pattern in situations where data must flow through a pre-defined sequence of steps.
 
 The basic purpose of the Pipeline is to offer a means for sequentially performing an arbitrary number of operations
 on a subject. A convenient example of a Pipeline in the wild is the rendering of this HTML page.
