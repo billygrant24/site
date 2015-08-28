@@ -10,8 +10,8 @@
 
                 <?php foreach ($this->find('log') as $log): ?>
                     <p>
-                        <a href="/<?= $this->e($log->getUri()) ?>" title="<?= $this->e($log->getMeta('title')) ?>">
-                            <?= $log->getMeta('title') ?>
+                        <a href="/<?= $this->e($log->uri) ?>" title="<?= $this->e($log->meta['title']) ?>">
+                            <?= $log->meta['title'] ?>
                         </a>
                     </p>
                 <?php endforeach; ?>

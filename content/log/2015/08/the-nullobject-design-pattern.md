@@ -3,7 +3,7 @@ title: Design Patterns: The Null Object
 template: log
 ---
 
-The NullObject pattern allows you to write more robust code with less defensive boilerplate.
+The Null Object pattern allows you to write more robust code with less defensive boilerplate.
 
 How often do you write code like this:
 

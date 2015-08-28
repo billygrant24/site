@@ -1,5 +1,5 @@
 <?php
-namespace Pipeline\Stage\Document;
+namespace Pipeline\Stage\ViewBuilder;
 
 use League\Pipeline\StageInterface;
 use League\Plates\Engine;
@@ -7,7 +7,7 @@ use League\Plates\Engine;
 /**
  * Class RenderTemplate
  *
- * @package Pipeline\Stage
+ * @package Pipeline\Stage\ViewBuilder
  */
 class RenderTemplate implements StageInterface
 {

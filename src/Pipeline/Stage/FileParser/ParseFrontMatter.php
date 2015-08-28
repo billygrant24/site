@@ -1,12 +1,13 @@
 <?php
-namespace Pipeline\Stage\Document;
+namespace Pipeline\Stage\FileParser;
 
 use League\Pipeline\StageInterface;
 use Mni\FrontYAML\Parser;
 
 /**
  * Class ParseFrontMatter
- * @package Pipeline\Stage
+ *
+ * @package Pipeline\Stage\FileParser
  */
 class ParseFrontMatter implements StageInterface
 {

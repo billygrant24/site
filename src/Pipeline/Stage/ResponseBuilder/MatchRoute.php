@@ -1,12 +1,13 @@
 <?php
-namespace Pipeline\Stage\Http;
+namespace Pipeline\Stage\ResponseBuilder;
 
 use FastRoute\Dispatcher;
 use League\Pipeline\StageInterface;
 
 /**
  * Class MatchRoute
- * @package Pipeline\Stage
+ *
+ * @package Pipeline\Stage\ResponseBuilder
  */
 class MatchRoute implements StageInterface
 {

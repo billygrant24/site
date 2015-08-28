@@ -3,6 +3,6 @@ namespace Pipeline;
 
 use League\Pipeline\Pipeline;
 
-class DocumentPipeline extends Pipeline
+class ResponseBuilderPipeline extends Pipeline
 {
 }

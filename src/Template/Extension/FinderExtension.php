@@ -5,10 +5,11 @@ use Exception\NotFoundException;
 use League\Plates\Engine;
 use League\Plates\Extension\ExtensionInterface;
 use Pimple\Container;
-use Pipeline\DocumentPipeline;
+use Pipeline\Factory;
+use Pipeline\ViewBuilderPipeline;
 use Pipeline\Payload\DocumentPayload;
 use Pipeline\Stage\Document\ParseFrontMatter;
-use Pipeline\Stage\Document\ResolveDocument;
+use Pipeline\Stage\Document\ResolveFile;
 
 /**
  * Class FinderExtension
@@ -47,13 +48,10 @@ class FinderExtension implements ExtensionInterface
     public function read($path)
     {
         try {
-            $document = new DocumentPayload;
-            $pipeline = new DocumentPipeline([
-                new ResolveDocument($path, $this->container['storage']),
-                new ParseFrontMatter($this->container['parser']),
-            ]);
+            $document   = new DocumentPayload;
+            $fileParser = Factory::createFileParser($path, $this->container['storage'], $this->container['parser']);
 
-            return $pipeline->process($document);
+            return $fileParser->process($document);
         } catch (NotFoundException $e) {
             return $document;
         }

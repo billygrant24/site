@@ -1,15 +1,16 @@
 <?php
-namespace Pipeline\Stage\Document;
+namespace Pipeline\Stage\FileParser;
 
 use Exception\NotFoundException;
 use League\Flysystem\Filesystem;
 use League\Pipeline\StageInterface;
 
 /**
- * Class ResolveDocument
- * @package Pipeline\Stage
+ * Class ResolveFile
+ *
+ * @package Pipeline\Stage\FileParser
  */
-class ResolveDocument implements StageInterface
+class ResolveFile implements StageInterface
 {
     /**
      * @var string

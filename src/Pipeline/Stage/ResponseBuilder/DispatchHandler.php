@@ -1,11 +1,16 @@
 <?php
-namespace Pipeline\Stage\Http;
+namespace Pipeline\Stage\ResponseBuilder;
 
 use Exception\MethodNotAllowedException;
 use Exception\NotFoundException;
 use FastRoute\Dispatcher;
 use League\Pipeline\StageInterface;
 
+/**
+ * Class DispatchHandler
+ *
+ * @package Pipeline\Stage\ResponseBuilder
+ */
 class DispatchHandler implements StageInterface
 {
     /**

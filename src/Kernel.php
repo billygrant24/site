@@ -3,10 +3,8 @@
 use Dotenv\Dotenv;
 use FastRoute\Dispatcher;
 use Pimple\Container;
-use Pipeline\HttpRequestPipeline;
+use Pipeline\Factory;
 use Pipeline\Payload\HttpRequestPayload;
-use Pipeline\Stage\Http\DispatchHandler;
-use Pipeline\Stage\Http\MatchRoute;
 use Symfony\Component\Debug\Debug;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -34,13 +32,10 @@ class Kernel
      */
     public function run(Dispatcher $dispatcher)
     {
-        $request  = Request::createFromGlobals();
-        $pipeline = new HttpRequestPipeline([
-            new MatchRoute($dispatcher),
-            new DispatchHandler($this->container),
-        ]);
+        $request         = Request::createFromGlobals();
+        $responseBuilder = Factory::createResponseBuilder($this->container, $dispatcher);
 
-        return $pipeline->process(new HttpRequestPayload($request))->getResponse()->send();
+        return $responseBuilder->process(new HttpRequestPayload($request))->getResponse()->send();
     }
 
     protected function boot()
